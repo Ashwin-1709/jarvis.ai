@@ -18,7 +18,7 @@ class Jarvis:
         Sets up the AI model, prompt, and agent executor.
         """
         self.model = ChatGoogleGenerativeAI(
-            api_key=os.getenv("GEMINI_API_KEY"), 
+            api_key=os.getenv("GEMINI_API_KEY"),
             model = MODEL
         )
 
@@ -37,19 +37,20 @@ class Jarvis:
 
     def create_agent(self) -> None:
         """
-        Creates the agent executor with the specified model, tools, state modifier, and checkpointer.
+        Creates the agent executor with the specified model, 
+        tools, state modifier, and checkpointer.
         Also sets up the configuration for the agent.
         """
         self.agent_executor = create_react_agent(
-            self.model, 
-            tools, 
-            state_modifier = self.system_prompt, 
+            self.model,
+            tools,
+            state_modifier = self.system_prompt,
             checkpointer = self.memory
         )
         self.config = {
             "configurable": {
                 "thread_id": "test-thread"
-            }        
+            }
         }
 
     def run(self) -> None:
