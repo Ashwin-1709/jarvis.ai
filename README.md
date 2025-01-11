@@ -1,5 +1,7 @@
 ## Jarvis
 
+![CodeQL Review](https://github.com/Ashwin-1709/jarvis.ai/actions/workflows/codeql.yml/badge.svg)
+
 Jarvis is a personal AI assistant designed to help you manage your day-to-day events and calendar. It leverages Google Calendar API and a gemini AI model to provide a seamless experience.
 
 ### Features
