@@ -6,6 +6,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from typing import List, Dict
 from constants import *
 
 
@@ -52,7 +53,12 @@ class GoogleCalendarClient:
         except HttpError as err:
             raise Exception(f"Cannot connect to the service: {err}")
         
-    def fetch_calendar_events_after_time(self, count_events, after_date_time, calendar = PRIMARY_CALENDAR):
+    def fetch_calendar_events_after_time(
+        self,
+        count_events: int,
+        after_date_time: str, 
+        calendar: str = PRIMARY_CALENDAR
+    ) -> List[Dict]:
         """
         Fetches input number of events from a specific calendar after a certain date time.
         """
@@ -62,7 +68,7 @@ class GoogleCalendarClient:
                 .list(
                     calendarId = calendar,
                     timeMin = after_date_time,
-                    maxResults = count_events,
+                    maxResults = min(count_events, EVENT_LIMIT),
                     singleEvents=True,
                     orderBy = "startTime",
                 )
@@ -73,12 +79,16 @@ class GoogleCalendarClient:
         except HttpError as err:
             print(f"Cannot fetch calendar entries: {err}. Please try again later!")
 
-    def fetch_upcoming_calendar_events(self, count_events, calendar = PRIMARY_CALENDAR):
+    def fetch_upcoming_calendar_events(
+        self,
+        count_events: int,
+        calendar: str = PRIMARY_CALENDAR
+    ) -> List[Dict]:
         """
         Fetches input number of upcoming events from a specific calendar.
         """
         cur_time = datetime.now(timezone.utc).isoformat('T', 'auto')[:-6] + 'Z'
-        return self.fetch_calendar_events_after_time(count_events, cur_time)
+        return self.fetch_calendar_events_after_time(count_events, cur_time, calendar)
 
     def get_calendar_list(self) -> None:
         """

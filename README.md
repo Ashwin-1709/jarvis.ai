@@ -73,6 +73,23 @@ Here are your calendars:
 Looking for your upcoming events, Please wait...
 Based on your next 4 meetings, there are no conflicts.
 
+> Do I have any meetings with sriram after 2 days? 
+Fetching upcoming meetings, Please wait...
+Yes, you have two meetings with sriram after 2 days: Weekly Friday Sync on 24th Jan, 11pm - 1:30am and Trip Planning on 25th Jan, 10pm - 12am.
+
+> Who will be i meeting in for the weekly friday sync?
+Looking for your upcoming events, Please wait...
+Besides you, <redacted> will be in the Weekly Friday Sync.
+
+
+> meetings I have after 2 months
+Fetching upcoming meetings, Please wait...
+Here are your meetings after 2 months:
+
+*   Flight to <redacted> on March 13th, 7:55pm - March 14th, 3am
+*   Flight to <redacted> on March 14th, 7am - 8:10am
+*   Weekly Friday Sync on March 14th, 11pm - March 15th, 1:30am
+
 > Thanks Jarvis, I am done
 
 Goodbye, will see you again 👋

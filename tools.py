@@ -1,5 +1,7 @@
 import json
-from datetime import datetime
+from parser import *
+from constants import *
+from datetime import datetime, timezone, timedelta
 from langchain_core.tools import tool
 from google_calendar_client import GoogleCalendarClient
 
@@ -11,29 +13,14 @@ def fetch_upcoming_events_for_calendar(num_events: int) -> str:
     Fetches upcoming events from users calendars. 
     Execute the function with parameter `num_events` depicting the number of upcoming calendar events to be fetched.
     Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
+    Do not list all the attendees.
     """
 
     print("Looking for your upcoming events, Please wait...")
     events = client.fetch_upcoming_calendar_events(count_events = num_events)
     if len(events) == 0:
         return "No upcoming events!"
-    
-    context = "Here are the upcoming calendar events for the users: \n\n"
-    cnt_event = 1
-
-    for event in events:
-        context += f"{cnt_event}. "
-        filtered_event_details = dict()
-        fields = ['summary', 'description']
-        for field in fields:
-            if field in event:
-                filtered_event_details[field] = event[field]
-        for time in ['start', 'end']:
-            dt_obj = datetime.fromisoformat((event[time]['dateTime']))
-            filtered_event_details[time] = dt_obj.strftime("%Y-%m-%d %H:%M:%S %Z")
-        context += json.dumps(filtered_event_details)
-        cnt_event += 1
-    return context
+    return parse_events(events)
 
 @tool
 def fetch_calendar_list() -> str:
@@ -44,21 +31,49 @@ def fetch_calendar_list() -> str:
 
     print('Fetching your calendar list, Please wait...')
     calendar_list = client.get_calendar_list()
-    context = "Here are the different calendars for the user: \n\n"
+    return parse_calendar_list(calendar_list)
 
-    cnt_calendars = 1
-    for calendar in calendar_list:
-        fields = ["id", "summary", "description", "kind"]
-        context += f"{cnt_calendars}. "
-        filtered_calendar_details = dict()
-        for field in fields:
-            if field in calendar:
-                filtered_calendar_details[field] = calendar[field]
-        
-        context += json.dumps(filtered_calendar_details)
-        cnt_calendars += 1
+
+@tool
+def fetch_events_after_time(
+    minutes: int = 0,
+    hours: int = 0,
+    days: int = 0
+) -> str:
+    """
+    Fetches calendar events occurring after a specified time offset from the current time.
+
+    Args:
+        minutes (int, optional): Number of minutes to offset the current time. Defaults to 0.
+        hours (int, optional): Number of hours to offset the current time. Defaults to 0.
+        days (int, optional): Number of days to offset the current time. Defaults to 0.
+    Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
+    Do not list all the attendees.
+    """
     
-    return context
+    print('Fetching upcoming meetings, Please wait...')
+    current_time = datetime.fromisoformat(datetime.now(timezone.utc).isoformat('T', 'auto'))
+    
+    # Add the specified minutes, hours, and days
+    delta = timedelta(minutes = minutes, hours = hours, days = days)
+    future_time = current_time + delta
+    
+    # Convert the result back to the same ISO 8601 format
+    target_time = future_time.isoformat('T', 'auto')[:-6] + 'Z'
+
+    events = client.fetch_calendar_events_after_time(EVENT_LIMIT, target_time)
+
+    if len(events) == 0:
+        return "No upcoming events!"
+    return parse_events(events)
+
+@tool
+def get_current_time() -> str:
+    """
+    Get current date and time in ISO format.
+    """
+    print("Fetching the current time.")
+    return datetime.now().isoformat()
 
 @tool
 def end_chat() -> None:
@@ -68,5 +83,10 @@ def end_chat() -> None:
     print("Goodbye, will see you again 👋")
     exit(0)
 
-tools = [fetch_upcoming_events_for_calendar, fetch_calendar_list, end_chat]
-
+tools = [
+    fetch_upcoming_events_for_calendar,
+    fetch_calendar_list,
+    get_current_time,
+    fetch_events_after_time,
+    end_chat
+]

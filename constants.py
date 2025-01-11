@@ -11,8 +11,9 @@ SERVICE_VERSION = "v3"
 PRIMARY_CALENDAR = "primary"
 
 '''
-    AI Model & Prompt constants
+    Google Calendar API, AI Model & Prompt constants
 '''
+EVENT_LIMIT = 2
 MODEL = "gemini-1.5-flash-latest"
 GREET = ''' 
     Hi! Just like every Tony Stark needs a Jarvis,
@@ -21,3 +22,7 @@ GREET = '''
     Fire away any problems you have!
 '''
 SYSTEM_PROMPT = "You are a Jarvis, a helpful assistant managing users calendars and day to day events."
+EVENT_INFO_PREFIX = "Here are the upcoming calendar events for the users: \n"
+CALENDAR_INFO_PREFIX = "Here are the different calendars for the user: \n"
+FILTERED_EVENT_FIELDS = ['summary', 'description', 'attendees']
+FILTERED_CALENDAR_FIELDS = ['id', 'summary', 'description', 'kind']
