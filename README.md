@@ -69,6 +69,10 @@ Here are your calendars:
 2. Birthdays
 3. Holidays in India
 
+> Do I have any conflicts in next 4 meetings?
+Looking for your upcoming events, Please wait...
+Based on your next 4 meetings, there are no conflicts.
+
 > Thanks Jarvis, I am done
 
 Goodbye, will see you again 👋
