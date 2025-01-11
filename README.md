@@ -20,7 +20,7 @@ For now, Jarvis can be used from terminal
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/yourusername/jarvis.git
+    git clone https://github.com/Ashwin-1709/jarvis.ai
     cd jarvis
     ```
 
