@@ -12,6 +12,7 @@ Jarvis is a personal AI assistant designed to help you manage your day-to-day ev
 
 ### Upcoming
 - **More Calendar Features**: Modifying events, Checking conflicts, Scheduling OOO & Focus Time, event attachments & files and more!
+- **Improved Task Capability**: Migration to multi-agent based architecture handling increased complex queries.
 - **Web UI**: User friendly UI to interact with **Jarvis**.
 
 
