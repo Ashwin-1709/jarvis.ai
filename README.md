@@ -116,9 +116,10 @@ Creating a new event, Please wait...
 
 Perfect. I've scheduled a 30-minute 1:1 meeting with redacted@gmail.com in your calendar for January 15th at 5:00 PM. The description includes "Discuss budget and commute".
 ```
+</br>
+
 
 <img src="static/1_1_meet.png" alt="Trip Planning Event" width="500"/>
-</br>
 
 ### Birthdays
 
@@ -127,8 +128,9 @@ Perfect. I've scheduled a 30-minute 1:1 meeting with redacted@gmail.com in your 
 
 Done. I've added an event to your calendar for Sandra's birthday on January 15th.
 ```
-<img src="static/birthday_event.png" alt="Birthdays" width="500"/>
 </br>
+
+<img src="static/birthday_event.png" alt="Birthdays" width="500"/>
 
 ### Other events
 
