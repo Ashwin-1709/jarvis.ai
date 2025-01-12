@@ -19,9 +19,8 @@ class GoogleCalendarClient:
         """
         self.setup_token()
         self.build_service()
-        log_with_context(logging.INFO, 'Google Calendar client setup done.')
+        log_with_context(logging.INFO, "Google Calendar client setup done.")
         pass
-
 
     def setup_token(self) -> None:
         """
@@ -54,13 +53,13 @@ class GoogleCalendarClient:
             )
         except HttpError as err:
             raise Exception(f"Cannot connect to the service: {err}")
-        
+
     def fetch_calendar_events(
         self,
         count_events: int,
         after_date_time: str,
         before_start_time: str,
-        calendar: str = PRIMARY_CALENDAR
+        calendar: str = PRIMARY_CALENDAR,
     ) -> List[Dict]:
         """
         Fetches input number of events from a specific calendar after a certain date time.
@@ -69,39 +68,43 @@ class GoogleCalendarClient:
         if after_date_time is None:
             orderByField = "endTime"
         try:
-            log_with_context(logging.DEBUG, f"fetch_calendar_events({count_events}, {after_date_time}, {before_start_time})")
+            log_with_context(
+                logging.DEBUG,
+                f"fetch_calendar_events({count_events}, {after_date_time}, {before_start_time})",
+            )
             events_result = (
                 self.calendar_service.events()
                 .list(
-                    calendarId = calendar,
-                    timeMin = after_date_time,
-                    timeMax = before_start_time,
-                    maxResults = min(count_events, EVENT_LIMIT),
+                    calendarId=calendar,
+                    timeMin=after_date_time,
+                    timeMax=before_start_time,
+                    maxResults=min(count_events, EVENT_LIMIT),
                     singleEvents=True,
-                    orderBy = orderByField,
+                    orderBy=orderByField,
                 )
                 .execute()
             )
             events = events_result.get("items", [])
             return events
         except HttpError as err:
-            log_with_context(logging.ERROR, f"Cannot fetch calendar entries: {err}. Please try again later!")
+            log_with_context(
+                logging.ERROR,
+                f"Cannot fetch calendar entries: {err}. Please try again later!",
+            )
 
     def fetch_upcoming_calendar_events(
-        self,
-        count_events: int,
-        calendar: str = PRIMARY_CALENDAR
+        self, count_events: int, calendar: str = PRIMARY_CALENDAR
     ) -> List[Dict]:
         """
         Fetches input number of upcoming events from a specific calendar.
         """
-        user_timezone = pytz.timezone('Asia/Kolkata')
+        user_timezone = pytz.timezone("Asia/Kolkata")
         cur_time = datetime.now(user_timezone).isoformat()
         return self.fetch_calendar_events(
-            count_events = count_events,
-            after_date_time = cur_time,
-            before_start_time = None,
-            calendar = calendar
+            count_events=count_events,
+            after_date_time=cur_time,
+            before_start_time=None,
+            calendar=calendar,
         )
 
     def get_calendar_list(self) -> List[Dict]:
@@ -113,33 +116,39 @@ class GoogleCalendarClient:
             calendars = calendar_list.get("items", [])
             return calendars
         except HttpError as error:
-            log_with_context(logging.ERROR, f'An error occurred: {error}')
+            log_with_context(logging.ERROR, f"An error occurred: {error}")
 
     def create_event(
         self,
         start_datetime: str,
         end_datetime: str,
-        attendees : List[str] = list(),
-        summary: str = '',
-        description: str = '',
-        calendar_id: str = PRIMARY_CALENDAR 
+        attendees: List[str] = list(),
+        summary: str = "",
+        description: str = "",
+        calendar_id: str = PRIMARY_CALENDAR,
     ) -> List[Dict]:
         """
         Create calendar event.
         """
         event = dict()
-        event['start'] = {'dateTime': start_datetime}
-        event['end'] = {'dateTime': end_datetime}
-        event['summary'] = summary
-        event['description'] = description
-        event['attendees'] = list()
+        event["start"] = {"dateTime": start_datetime}
+        event["end"] = {"dateTime": end_datetime}
+        event["summary"] = summary
+        event["description"] = description
+        event["attendees"] = list()
         for attendee in attendees:
-            event['attendees'].append({'email': attendee})
-        log_with_context(logging.INFO, f'Event: {event}')
+            event["attendees"].append({"email": attendee})
+        log_with_context(logging.INFO, f"Event: {event}")
         try:
-            event = self.calendar_service.events().insert(calendarId = calendar_id, body = event).execute()
+            event = (
+                self.calendar_service.events()
+                .insert(calendarId=calendar_id, body=event)
+                .execute()
+            )
             return event
         except HttpError as err:
-            log_with_context(logging.ERROR, f"Cannot create calendar entry: {err}. Please try again later!")
+            log_with_context(
+                logging.ERROR,
+                f"Cannot create calendar entry: {err}. Please try again later!",
+            )
             raise Exception(err)
-    

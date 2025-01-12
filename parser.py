@@ -1,7 +1,13 @@
 import json
 from datetime import datetime
 from typing import List, Dict
-from constants import EVENT_INFO_PREFIX, FILTERED_EVENT_FIELDS, CALENDAR_INFO_PREFIX, FILTERED_CALENDAR_FIELDS
+from constants import (
+    EVENT_INFO_PREFIX,
+    FILTERED_EVENT_FIELDS,
+    CALENDAR_INFO_PREFIX,
+    FILTERED_CALENDAR_FIELDS,
+)
+
 
 def copy_fields(source: Dict, fields: List) -> Dict:
     """
@@ -23,24 +29,25 @@ def parse_events(events: List[Dict]) -> str:
     event_count = 1
 
     for event in events:
-        content += f'\n{event_count}. '
+        content += f"\n{event_count}. "
         for field in FILTERED_EVENT_FIELDS:
             if field in event:
-                if field == 'attendees':
-                    content += 'attendees: '
+                if field == "attendees":
+                    content += "attendees: "
                     email = list()
                     for a in event[field]:
                         if "self" in a and a["self"]:
                             continue
                         email.append(a["email"])
-                    content += ','.join(email) + '\n'
+                    content += ",".join(email) + "\n"
                 else:
-                    content += f'{field}: {event[field]}\n'
-        for time in ['start', 'end']:
+                    content += f"{field}: {event[field]}\n"
+        for time in ["start", "end"]:
             content += f"{time}: {convert_datetime(event[time]['dateTime'])}\n"
         event_count += 1
 
     return content
+
 
 def parse_calendar_list(calendars: List[Dict]) -> str:
     """
@@ -52,12 +59,13 @@ def parse_calendar_list(calendars: List[Dict]) -> str:
     calendar_count = 1
 
     for calendar in calendars:
-        content += f'{calendar_count}. '
+        content += f"{calendar_count}. "
         filtered_calendar = copy_fields(calendar, FILTERED_CALENDAR_FIELDS)
         content += json.dumps(filtered_calendar)
         calendar_count += 1
-    
+
     return content
+
 
 def convert_datetime(_datetime: str) -> str:
     """
