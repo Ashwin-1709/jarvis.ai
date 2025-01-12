@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime
 import os.path
 import pytz
 from google.auth.transport.requests import Request
@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from typing import List, Dict
 from constants import *
+from logger import log_with_context, logging
 
 
 class GoogleCalendarClient:
@@ -18,6 +19,7 @@ class GoogleCalendarClient:
         """
         self.setup_token()
         self.build_service()
+        log_with_context(logging.INFO, 'Google Calendar client setup done.')
         pass
 
 
@@ -82,7 +84,7 @@ class GoogleCalendarClient:
             events = events_result.get("items", [])
             return events
         except HttpError as err:
-            print(f"Cannot fetch calendar entries: {err}. Please try again later!")
+            log_with_context(logging.ERROR, f"Cannot fetch calendar entries: {err}. Please try again later!")
 
     def fetch_upcoming_calendar_events(
         self,
@@ -110,4 +112,4 @@ class GoogleCalendarClient:
             calendars = calendar_list.get("items", [])
             return calendars
         except HttpError as error:
-            print(f'An error occurred: {error}')
+            log_with_context(logging.ERROR, f'An error occurred: {error}')

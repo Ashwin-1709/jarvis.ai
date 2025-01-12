@@ -9,6 +9,7 @@ from datetime import (
 )
 from langchain_core.tools import tool
 from google_calendar_client import GoogleCalendarClient
+from logger import log_with_context, logging
 
 client = GoogleCalendarClient()
 
@@ -22,6 +23,7 @@ def fetch_upcoming_events_for_calendar(num_events: int) -> str:
     """
 
     print("Looking for your upcoming events, Please wait...")
+    log_with_context(logging.INFO, f'fetch_upcoming_events_for_calendar() called with num_events: {num_events}.')
     events = client.fetch_upcoming_calendar_events(count_events = num_events)
     if len(events) == 0:
         return "No upcoming events!"
@@ -35,6 +37,7 @@ def fetch_calendar_list() -> str:
     """
 
     print('Fetching your calendar list, Please wait...')
+    log_with_context(logging.INFO, f'fetch_calendar_list() called.')
     calendar_list = client.get_calendar_list()
     return parse_calendar_list(calendar_list)
 
@@ -57,6 +60,7 @@ def fetch_events_after_time(
     """
     
     print('Fetching upcoming meetings, Please wait...')
+    log_with_context(logging.INFO, f'fetch_events_after_time() called with offset {minutes} mins {hours} hours {days} days.')
     current_time = datetime.fromisoformat(datetime.now(timezone.utc).isoformat('T', 'auto'))
     
     # Add the specified minutes, hours, and days
@@ -82,6 +86,7 @@ def get_current_time() -> str:
     Get current date and time in ISO format.
     """
     print("Fetching the current time.")
+    log_with_context(logging.INFO, 'get_current_time() called.')
     return datetime.now().isoformat()
 
 @tool
@@ -94,6 +99,7 @@ def get_current_day_and_date() -> str:
         Today's day is Sunday
     """
     today = date.today()
+    log_with_context(logging.INFO, 'get_current_day_and_date() called.')
     current_date = today.strftime("%Y-%m-%d")
     current_day = today.strftime("%A")  # Get the full weekday name (e.g., "Monday")
     return f"Today's date: {current_date}\nToday's day: {current_day}"
@@ -114,17 +120,17 @@ def fetch_calendar_events(
         User may provide datetime strings in different formats, you have to interpret it and format it correctly before sending to the function.
         Examples:
             <begin>
-                user: Do I have any meetings between 1st Jan 2025 and 5th Jan 2025?
+                user: Do I have any events between 1st Jan 2025 and 5th Jan 2025?
                 agent: call function with `start_datetime` as 2025-01-01T00:00:00 and `end_datetime` as 2025-01-05T23:59:59 
             <end>
                 user: Show me my events from 10 am to 2 pm on 15th Feb 2025.
                 agent: call function with `start_datetime` as 2025-02-15T10:00:00 and `end_datetime` as 2025-02-15T14:00:00
             <begin>
-                user: what are the meetings I have on 4th Jan 2025?
+                user: what are the events I have on 4th Jan 2025?
                 agent: call function with `start_datetime` as 2025-01-04T00:00:00 and `end_datetime` as 2025-01-04T23:59:59
             <end>
             <begin>
-                user: what are the meetings I have after 4th Jan 2025 4 am?
+                user: what are the events I have after 4th Jan 2025 4 am?
                 agent: call function with just `start_datetime` as 2025-01-04T04:00:00
             <end>
             <begin>
@@ -135,7 +141,8 @@ def fetch_calendar_events(
     Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
     Do not list all the attendees.
     """
-    print(f'Function called with {count_events}, {start_datetime}, {end_datetime}')
+    print('Fetching upcoming events, Please wait...')
+    log_with_context(logging.INFO, f'fetch_calendar_events() called with {count_events} events {start_datetime} start & {end_datetime} end.')
     if end_datetime:
         end_datetime += '+05:30'
         if not start_datetime:
@@ -145,7 +152,7 @@ def fetch_calendar_events(
         start_datetime += '+05:30'
         
     events = client.fetch_calendar_events(
-        count_events = EVENT_LIMIT, 
+        count_events = count_events, 
         after_date_time = start_datetime,
         before_start_time = end_datetime
     )
