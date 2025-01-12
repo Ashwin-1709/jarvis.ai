@@ -53,10 +53,11 @@ class GoogleCalendarClient:
         except HttpError as err:
             raise Exception(f"Cannot connect to the service: {err}")
         
-    def fetch_calendar_events_after_time(
+    def fetch_calendar_events(
         self,
         count_events: int,
-        after_date_time: str, 
+        after_date_time: str,
+        before_start_time: str,
         calendar: str = PRIMARY_CALENDAR
     ) -> List[Dict]:
         """
@@ -68,6 +69,7 @@ class GoogleCalendarClient:
                 .list(
                     calendarId = calendar,
                     timeMin = after_date_time,
+                    timeMax = before_start_time,
                     maxResults = min(count_events, EVENT_LIMIT),
                     singleEvents=True,
                     orderBy = "startTime",
@@ -88,7 +90,12 @@ class GoogleCalendarClient:
         Fetches input number of upcoming events from a specific calendar.
         """
         cur_time = datetime.now(timezone.utc).isoformat('T', 'auto')[:-6] + 'Z'
-        return self.fetch_calendar_events_after_time(count_events, cur_time, calendar)
+        return self.fetch_calendar_events(
+            count_events = count_events,
+            after_date_time = cur_time,
+            before_start_time = None,
+            calendar = calendar
+        )
 
     def get_calendar_list(self) -> None:
         """

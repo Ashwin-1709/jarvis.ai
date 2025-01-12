@@ -81,7 +81,6 @@ Yes, you have two meetings with sriram after 2 days: Weekly Friday Sync on 24th 
 Looking for your upcoming events, Please wait...
 Besides you, <redacted> will be in the Weekly Friday Sync.
 
-
 > meetings I have after 2 months
 Fetching upcoming meetings, Please wait...
 Here are your meetings after 2 months:

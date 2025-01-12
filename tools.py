@@ -61,11 +61,43 @@ def fetch_events_after_time(
     # Convert the result back to the same ISO 8601 format
     target_time = future_time.isoformat('T', 'auto')[:-6] + 'Z'
 
-    events = client.fetch_calendar_events_after_time(EVENT_LIMIT, target_time)
+    events = client.fetch_calendar_events(
+        count_events = EVENT_LIMIT, 
+        after_date_time = target_time,
+        before_start_time = None
+    )
 
     if len(events) == 0:
         return "No upcoming events!"
     return parse_events(events)
+
+@tool
+def get_events_after_particular_datetime(date_time: str) -> str:
+    """
+    Fetches upcoming events after a particular `date_time`.
+
+    Args:
+        `date_time` (str): Date time string in format %Y-%m-%dT%H:%M:%S
+        Example: 2015-05-28T09:00:00
+        User will not provide date time in this exact format, you have to interpret it and formulate it.
+        Examples:
+            <begin>
+                <user>: Do I have any meetings after 4th Jan?
+                <agent>: call get_current_time() and extract year from current time.
+                <agent>: call get_events_after_particular_datetime() with `date_time` as 2025-01-04T00:00:00
+
+                <user> Do i have any meetings after 4 pm on 4th Jan 2025?
+                <agent>: call get_events_after_particular_datetime() with `date_time` as 2025-01-04T16:00:00
+
+                <user> what are the meetings I have after 23rd Feb 2025?
+                <agent> call get_events_after_particular_datetime() with `date_time` as 2025-02-23T00:00:00
+            <end>
+    Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
+    Do not list all the attendees.
+    """
+
+    # TODO: Implement this
+    print(f"Calling function with date_time {date_time}")
 
 @tool
 def get_current_time() -> str:
