@@ -1,7 +1,12 @@
-import json
+import pytz
 from parser import *
 from constants import *
-from datetime import datetime, timezone, timedelta
+from datetime import (
+    datetime,
+    timezone,
+    timedelta,
+    date
+)
 from langchain_core.tools import tool
 from google_calendar_client import GoogleCalendarClient
 
@@ -72,34 +77,6 @@ def fetch_events_after_time(
     return parse_events(events)
 
 @tool
-def get_events_after_particular_datetime(date_time: str) -> str:
-    """
-    Fetches upcoming events after a particular `date_time`.
-
-    Args:
-        `date_time` (str): Date time string in format %Y-%m-%dT%H:%M:%S
-        Example: 2015-05-28T09:00:00
-        User will not provide date time in this exact format, you have to interpret it and formulate it.
-        Examples:
-            <begin>
-                <user>: Do I have any meetings after 4th Jan?
-                <agent>: call get_current_time() and extract year from current time.
-                <agent>: call get_events_after_particular_datetime() with `date_time` as 2025-01-04T00:00:00
-
-                <user> Do i have any meetings after 4 pm on 4th Jan 2025?
-                <agent>: call get_events_after_particular_datetime() with `date_time` as 2025-01-04T16:00:00
-
-                <user> what are the meetings I have after 23rd Feb 2025?
-                <agent> call get_events_after_particular_datetime() with `date_time` as 2025-02-23T00:00:00
-            <end>
-    Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
-    Do not list all the attendees.
-    """
-
-    # TODO: Implement this
-    print(f"Calling function with date_time {date_time}")
-
-@tool
 def get_current_time() -> str:
     """
     Get current date and time in ISO format.
@@ -108,9 +85,80 @@ def get_current_time() -> str:
     return datetime.now().isoformat()
 
 @tool
+def get_current_day_and_date() -> str:
+    """
+    Execute this function to get current day and date.
+    
+    Example output:
+        Today's date is 2025-01-12
+        Today's day is Sunday
+    """
+    today = date.today()
+    current_date = today.strftime("%Y-%m-%d")
+    current_day = today.strftime("%A")  # Get the full weekday name (e.g., "Monday")
+    return f"Today's date: {current_date}\nToday's day: {current_day}"
+
+@tool
+def fetch_calendar_events(
+    count_events: int = EVENT_LIMIT,
+    start_datetime: str = None,
+    end_datetime: str = None
+) -> str:
+    """
+    Fetches `count_events` number of calendar events between `start_datetime` and `end_datetime`.
+
+    Args:
+        count_events (int, optional): Number of events to fetch. Defaults to 0.
+        start_datetime (str, optional): Start date time string in format %Y-%m-%dT%H:%M:%S. Defaults to None.
+        end_datetime (str, optional): Start date time string in format %Y-%m-%dT%H:%M:%S. Defaults to None.
+        User may provide datetime strings in different formats, you have to interpret it and format it correctly before sending to the function.
+        Examples:
+            <begin>
+                user: Do I have any meetings between 1st Jan 2025 and 5th Jan 2025?
+                agent: call function with `start_datetime` as 2025-01-01T00:00:00 and `end_datetime` as 2025-01-05T23:59:59 
+            <end>
+                user: Show me my events from 10 am to 2 pm on 15th Feb 2025.
+                agent: call function with `start_datetime` as 2025-02-15T10:00:00 and `end_datetime` as 2025-02-15T14:00:00
+            <begin>
+                user: what are the meetings I have on 4th Jan 2025?
+                agent: call function with `start_datetime` as 2025-01-04T00:00:00 and `end_datetime` as 2025-01-04T23:59:59
+            <end>
+            <begin>
+                user: what are the meetings I have after 4th Jan 2025 4 am?
+                agent: call function with just `start_datetime` as 2025-01-04T04:00:00
+            <end>
+            <begin>
+                user: what are the meetings I have before 4th Jan 2025 4 am?
+                agent: call function with just `end_datetime` as 2025-01-04T04:00:00
+            <end>
+        End of examples 
+    Format the start and end time of events to human readable format like 25th Jan, 8pm - 10pm.
+    Do not list all the attendees.
+    """
+    print(f'Function called with {count_events}, {start_datetime}, {end_datetime}')
+    if end_datetime:
+        end_datetime += '+05:30'
+        if not start_datetime:
+            user_timezone = pytz.timezone('Asia/Kolkata')
+            start_datetime = datetime.now(user_timezone).isoformat()
+    else: 
+        start_datetime += '+05:30'
+        
+    events = client.fetch_calendar_events(
+        count_events = EVENT_LIMIT, 
+        after_date_time = start_datetime,
+        before_start_time = end_datetime
+    )
+
+    if len(events) == 0:
+        return "No upcoming events!"
+    return parse_events(events)
+    
+
+@tool
 def end_chat() -> None:
     """
-        Execute this function if user is satisfied and wants to end chat.
+        Execute this function if user is satisfied or wants to end chat.
     """
     print("Goodbye, will see you again 👋")
     exit(0)
@@ -120,5 +168,6 @@ tools = [
     fetch_calendar_list,
     get_current_time,
     fetch_events_after_time,
-    end_chat
+    end_chat,
+    fetch_calendar_events
 ]

@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import os.path
-
+import pytz
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -63,6 +63,9 @@ class GoogleCalendarClient:
         """
         Fetches input number of events from a specific calendar after a certain date time.
         """
+        orderByField = "startTime"
+        if after_date_time is None:
+            orderByField = "endTime"
         try:
             events_result = (
                 self.calendar_service.events()
@@ -72,7 +75,7 @@ class GoogleCalendarClient:
                     timeMax = before_start_time,
                     maxResults = min(count_events, EVENT_LIMIT),
                     singleEvents=True,
-                    orderBy = "startTime",
+                    orderBy = orderByField,
                 )
                 .execute()
             )
@@ -89,7 +92,8 @@ class GoogleCalendarClient:
         """
         Fetches input number of upcoming events from a specific calendar.
         """
-        cur_time = datetime.now(timezone.utc).isoformat('T', 'auto')[:-6] + 'Z'
+        user_timezone = pytz.timezone('Asia/Kolkata')
+        cur_time = datetime.now(user_timezone).isoformat()
         return self.fetch_calendar_events(
             count_events = count_events,
             after_date_time = cur_time,
