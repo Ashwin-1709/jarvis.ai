@@ -45,8 +45,11 @@ For now, Jarvis can be used from terminal
     ```sh
     python jarvis.py
     ```
+2. The first time you run this, it prompts you to authorize access:
+    - If you're not already signed in to your Google Account, sign in when prompted. If you're signed in to multiple accounts, select one account to use for authorization.
+    - Click Accept.
 
-2. Interact with Jarvis through the command line.
+3. Interact with Jarvis through the command line.
 
 ## Jarvis in action
 
