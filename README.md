@@ -42,7 +42,7 @@ For now, Jarvis can be used from terminal
 
 1. Run the Jarvis assistant:
     ```sh
-    python agent.py
+    python jarvis.py
     ```
 
 2. Interact with Jarvis through the command line.
