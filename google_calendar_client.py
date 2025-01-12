@@ -69,6 +69,7 @@ class GoogleCalendarClient:
         if after_date_time is None:
             orderByField = "endTime"
         try:
+            log_with_context(logging.DEBUG, f"fetch_calendar_events({count_events}, {after_date_time}, {before_start_time})")
             events_result = (
                 self.calendar_service.events()
                 .list(
@@ -103,7 +104,7 @@ class GoogleCalendarClient:
             calendar = calendar
         )
 
-    def get_calendar_list(self) -> None:
+    def get_calendar_list(self) -> List[Dict]:
         """
         Retrieves and prints the list of calendars.
         """
@@ -113,3 +114,32 @@ class GoogleCalendarClient:
             return calendars
         except HttpError as error:
             log_with_context(logging.ERROR, f'An error occurred: {error}')
+
+    def create_event(
+        self,
+        start_datetime: str,
+        end_datetime: str,
+        attendees : List[str] = list(),
+        summary: str = '',
+        description: str = '',
+        calendar_id: str = PRIMARY_CALENDAR 
+    ) -> List[Dict]:
+        """
+        Create calendar event.
+        """
+        event = dict()
+        event['start'] = {'dateTime': start_datetime}
+        event['end'] = {'dateTime': end_datetime}
+        event['summary'] = summary
+        event['description'] = description
+        event['attendees'] = list()
+        for attendee in attendees:
+            event['attendees'].append({'email': attendee})
+        log_with_context(logging.INFO, f'Event: {event}')
+        try:
+            event = self.calendar_service.events().insert(calendarId = calendar_id, body = event).execute()
+            return event
+        except HttpError as err:
+            log_with_context(logging.ERROR, f"Cannot create calendar entry: {err}. Please try again later!")
+            raise Exception(err)
+    

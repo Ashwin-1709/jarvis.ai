@@ -6,12 +6,12 @@ Jarvis is a personal AI assistant designed to help you manage your day-to-day ev
 
 ### Features
 
-- **Google Calendar Integration**: Fetch and manage your calendar events.
+- **Google Calendar Integration**: Fetch, manage and create calendar events.
 - **Conversational AI**: Interact with Jarvis using natural language.
 - **Memory Management**: Keeps track of the conversation context.
 
 ### Upcoming
-- **More Calendar Features**: Creating, modifying events, checking conflicts, scheduling events, event attachments & files and more!
+- **More Calendar Features**: Modifying events, Checking conflicts, Scheduling OOO & Focus Time, event attachments & files and more!
 - **Web UI**: User friendly UI to interact with **Jarvis**.
 
 
@@ -47,7 +47,7 @@ For now, Jarvis can be used from terminal
 
 2. Interact with Jarvis through the command line.
 
-### Example
+## Jarvis in action
 
 ```
 Hi! Just like every Tony Stark needs a Jarvis,
@@ -89,7 +89,54 @@ Here are your meetings after 2 months:
 *   Flight to <redacted> on March 14th, 7am - 8:10am
 *   Weekly Friday Sync on March 14th, 11pm - March 15th, 1:30am
 
+> do I have any events on 13th march?
+You have one event on March 13th, 2025:  "Flight to <redacted>".  The details are from an automatically created event from a Gmail email.
+
+> am I free between 3 and 9 am on 14th march?
+No, you're not completely free between 3 AM and 9 AM on March 14th. You have a meeting, "Flight to <redacted>", scheduled from 7:00 AM to 8:10 AM.
+
 > Thanks Jarvis, I am done
 
 Goodbye, will see you again 👋
 ```
+
+## Creating events
+
+### 1:1s
+```
+> Schedule a 1:1 with redacted@gmail.com for trip planning. Agenda is to discuss budget and commute.
+When would you like to schedule this 1:1 meeting?  Please provide a date and time, or a range of times that work for you.  I'll also need to know how long you'd like the meeting to last.
+
+> On 15th jan 5 pm would sound good
+How long should the meeting be?
+
+> 30 mins should be fine
+
+Creating a new event, Please wait...
+
+Perfect. I've scheduled a 30-minute 1:1 meeting with redacted@gmail.com in your calendar for January 15th at 5:00 PM. The description includes "Discuss budget and commute".
+```
+
+<img src="static/1_1_meet.png" alt="Trip Planning Event" width="500"/>
+</br>
+
+### Birthdays
+
+```
+> Add an event for Sandra's birthday for 15th Jan
+
+Done. I've added an event to your calendar for Sandra's birthday on January 15th.
+```
+<img src="static/birthday_event.png" alt="Birthdays" width="500"/>
+</br>
+
+### Other events
+
+```
+> Create a 3 hour movie night event for 8 pm 13th Jan with redacted1@gmail.com & redacted2@gmail.com
+
+Creating a new event, Please wait...
+OK. I've added a "Movie Night" event to your calendar from 8 pm to 11 pm on January 13th.  redacted1@gmail.com and redacted2@gmail.com are included.
+```
+
+<img src="static/movie_night_event.png" alt="Movie Nights" width="500"/>

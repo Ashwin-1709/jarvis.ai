@@ -148,6 +148,8 @@ def fetch_calendar_events(
         if not start_datetime:
             user_timezone = pytz.timezone('Asia/Kolkata')
             start_datetime = datetime.now(user_timezone).isoformat()
+        else:
+            start_datetime += '+05:30'
     else: 
         start_datetime += '+05:30'
         
@@ -160,7 +162,71 @@ def fetch_calendar_events(
     if len(events) == 0:
         return "No upcoming events!"
     return parse_events(events)
+
+@tool
+def create_event(
+    start_datetime: str,
+    end_datetime: str,
+    attendees: str = '',
+    summary: str = '',
+    description: str = ''
+) -> str:
+    """
+    Create an event in users calendar based on given data.
+
+    Args:
+        start_datetime (str): Start date time string in format %Y-%m-%dT%H:%M:%S like 2025-01-12T08:00:00.
+        end_datetime (str): End date time string in format %Y-%m-%dT%H:%M:%S like 2025-01-12T08:00:00.
+        attendees (str, optional): Comma separated string of attendee email addresses. Defaults to ''.
+        summary (str, optional): Summary or title of the event. Defaults to ''.
+        description (str, optional): Description of the event. Defaults to ''.
+        User may provide start_datetime end_datetime in different formats, you have to interpret it correctly.
+        Examples:
+            <begin>
+                user: Setup a event for 12th Jan 2025, 8 pm to 11:30 pm
+                agent: call function with `start_datetime` as 2025-01-12T20:00:00 and `end_datetime` as 2025-01-12T23:30:00
+            <end>
+            <begin>
+                user: Setup 1 hour long 1:1 sync with dave@gmail.com for 3rd Jan, 5 pm
+                agent: call function with `start_datetime` as 2025-01-03T17:00:00 and `end_datetime` as 2025-01-03T18:00:00, attendees as 'dave@gmail.com'
+            <end>
+            <begin>
+                user: Create an event for sandra's party for 21st Sept 4 pm to 10 pm
+                agent: call function with `start_datetime` as 2025-09-21T16:00:00 and `end_datetime` as 2025-09-21T22:00:00 and summary as "Sandra's Party"
+            <end>
+            <begin>
+                user: Create an hour long group study session for algebra on 3rd Jan adding sandra@gmail.com and dave@gmail.com
+                agent: call function with `start_datetime` as 2025-01-03T00:00:00 and `end_datetime` as 2025-01-03T01:00:00, attendees as 'sandra@gmail.com,dave@gmail.com' and summary as "Algebra Study Session"
+            <end>
+            <begin>
+                user: Add an event for 24th as sandra's birthday
+                agent: call function with `start_datetime` as 2025-01-24T00:00:00 and `end_datetime` as 2025-01-24T23:59:59, summary as "sandra's birthday"
+            <end>
+            <begin>
+                user: Add an event for 24th as annual check with dave@gmail.com. Promotions discussions need to be done in this.
+                agent: call function with `start_datetime` as 2025-01-24T00:00:00 and `end_datetime` as 2025-01-24T23:59:59, attendees as 'dave@gmail.com', summary as "Annual Check", description as "Promotions discussions need to be done in this"
+            <end>
+        End of examples 
+    """
+    print('Creating a new event, Please wait...')
+    log_with_context(
+        logging.INFO,
+        f'create_event() called with start: {start_datetime}, end: {end_datetime}, attendees: {attendees}, summary: {summary}, description: {description}.'
+    )
     
+    attendees = attendees.strip().split(',') if len(attendees) > 0 else list()
+    event = client.create_event(
+        start_datetime = start_datetime + '+05:30',
+        end_datetime = end_datetime + '+05:30',
+        attendees = attendees,
+        summary = summary,
+        description = description
+    )
+    
+    if event:
+        return "Event created successfully!"
+    else:
+        return "Failed to create event."
 
 @tool
 def end_chat() -> None:
@@ -176,5 +242,6 @@ tools = [
     get_current_time,
     fetch_events_after_time,
     end_chat,
-    fetch_calendar_events
+    fetch_calendar_events,
+    create_event
 ]

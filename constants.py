@@ -2,7 +2,7 @@
     Access & auth constants
 '''
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/calendar"]
 TOKEN_FILE = "token.json"
 CREDENTIAL_FILE = "credentials.json"
 VALIDATION_PORT = 0
@@ -13,7 +13,7 @@ PRIMARY_CALENDAR = "primary"
 '''
     Google Calendar API, AI Model & Prompt constants
 '''
-EVENT_LIMIT = 2
+EVENT_LIMIT = 25
 MODEL = "gemini-1.5-flash-latest"
 GREET = ''' 
     Hi! Just like every Tony Stark needs a Jarvis,
@@ -22,7 +22,7 @@ GREET = '''
     Fire away any problems you have!
 '''
 SYSTEM_PROMPT = "You are a Jarvis, a helpful assistant managing users calendars and day to day events."
-EVENT_INFO_PREFIX = "Here are the upcoming calendar events for the users: \n"
+EVENT_INFO_PREFIX = "Here are the calendar events for the users: \n"
 CALENDAR_INFO_PREFIX = "Here are the different calendars for the user: \n"
 FILTERED_EVENT_FIELDS = ['summary', 'description', 'attendees']
 FILTERED_CALENDAR_FIELDS = ['id', 'summary', 'description', 'kind']
