@@ -98,7 +98,7 @@ class GoogleCalendarClient:
         """
         Fetches input number of upcoming events from a specific calendar.
         """
-        user_timezone = pytz.timezone("Asia/Kolkata")
+        user_timezone = pytz.timezone(USER_TIMEZONE)
         cur_time = datetime.now(user_timezone).isoformat()
         return self.fetch_calendar_events(
             count_events=count_events,

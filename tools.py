@@ -87,7 +87,40 @@ def get_current_time() -> str:
     """
     print("Fetching the current time.")
     log_with_context(logging.INFO, "get_current_time() called.")
-    return datetime.now().isoformat()
+    user_timezone = pytz.timezone(USER_TIMEZONE)
+    current_time = datetime.now(user_timezone).isoformat()
+
+    return f"Current time in ISO format is: {current_time}"
+
+
+@tool
+def get_date_time_multiagent() -> str:
+    """
+    Get current date and time in ISO format. Do not worry about other aspects of the query, just answer the date time information.
+    Examples:
+        <begin>
+            user: Am I free after 8 pm today?
+            agent: return current date and time in ISO format
+        <end>
+        <begin>
+            user: do I have any meetings tomorrow?
+            agent: return current date and time in ISO format
+        <end>
+        <begin>
+            user: schedule a reminder for 4 pm tomorrow
+            agent: return current date and time in ISO format
+        <end>
+        <begin>
+            user: what events are scheduled for tomorrow
+            agent: return current date and time in ISO format
+        <end>
+    """
+    print("Fetching the current time.")
+    log_with_context(logging.INFO, "get_current_time() called.")
+    user_timezone = pytz.timezone(USER_TIMEZONE)
+    current_time = datetime.now(user_timezone).isoformat()
+
+    return f"Current time in ISO format is: {current_time}"
 
 
 @tool
@@ -151,7 +184,7 @@ def fetch_calendar_events(
     if end_datetime:
         end_datetime += "+05:30"
         if not start_datetime:
-            user_timezone = pytz.timezone("Asia/Kolkata")
+            user_timezone = pytz.timezone(USER_TIMEZONE)
             start_datetime = datetime.now(user_timezone).isoformat()
         else:
             start_datetime += "+05:30"
@@ -184,7 +217,7 @@ def create_event(
         start_datetime (str): Start date time string in format %Y-%m-%dT%H:%M:%S like 2025-01-12T08:00:00.
         end_datetime (str): End date time string in format %Y-%m-%dT%H:%M:%S like 2025-01-12T08:00:00.
         attendees (str, optional): Comma separated string of attendee email addresses. Defaults to ''.
-        summary (str, optional): Summary or title of the event. Defaults to ''.
+        summary (str, optional): Title of the event. Defaults to ''.
         description (str, optional): Description of the event. Defaults to ''.
         User may provide start_datetime end_datetime in different formats, you have to interpret it correctly.
         Examples:
@@ -250,6 +283,19 @@ tools = [
     get_current_time,
     fetch_events_after_time,
     end_chat,
+    fetch_calendar_events,
+    create_event,
+]
+
+datetime_agent_tools = [
+    get_date_time_multiagent,
+    get_current_day_and_date,
+]
+
+calendar_agent_tools = [
+    fetch_upcoming_events_for_calendar,
+    fetch_calendar_list,
+    fetch_events_after_time,
     fetch_calendar_events,
     create_event,
 ]
