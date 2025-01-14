@@ -209,6 +209,7 @@ def create_event(
     attendees: str = "",
     summary: str = "",
     description: str = "",
+    event_type: str = "default",
 ) -> str:
     """
     Create an event in users calendar based on given data.
@@ -219,6 +220,7 @@ def create_event(
         attendees (str, optional): Comma separated string of attendee email addresses. Defaults to ''.
         summary (str, optional): Title of the event. Defaults to ''.
         description (str, optional): Description of the event. Defaults to ''.
+        event_type(str, optional): Event type among ['default', 'focusTime', 'outOfOffice']. Defaults to 'default'.
         User may provide start_datetime end_datetime in different formats, you have to interpret it correctly.
         Examples:
             <begin>
@@ -234,8 +236,8 @@ def create_event(
                 agent: call function with `start_datetime` as 2025-09-21T16:00:00 and `end_datetime` as 2025-09-21T22:00:00 and summary as "Sandra's Party"
             <end>
             <begin>
-                user: Create an hour long group study session for algebra on 3rd Jan adding sandra@gmail.com and dave@gmail.com
-                agent: call function with `start_datetime` as 2025-01-03T00:00:00 and `end_datetime` as 2025-01-03T01:00:00, attendees as 'sandra@gmail.com,dave@gmail.com' and summary as "Algebra Study Session"
+                user: Create an hour long group study session for algebra on 3rd Jan 5 pm adding sandra@gmail.com and dave@gmail.com
+                agent: call function with `start_datetime` as 2025-01-03T17:00:00 and `end_datetime` as 2025-01-03T18:00:00, attendees as 'sandra@gmail.com,dave@gmail.com' and summary as "Algebra Study Session"
             <end>
             <begin>
                 user: Add an event for 24th as sandra's birthday
@@ -244,6 +246,14 @@ def create_event(
             <begin>
                 user: Add an event for 24th as annual check with dave@gmail.com. Promotions discussions need to be done in this.
                 agent: call function with `start_datetime` as 2025-01-24T00:00:00 and `end_datetime` as 2025-01-24T23:59:59, attendees as 'dave@gmail.com', summary as "Annual Check", description as "Promotions discussions need to be done in this"
+            <end>
+            <begin>
+                user: I will be going on japan trip from 13th march to 23rd march, schedule out of office / OOO time in my calendar.
+                agent: call function with `start_datetime` as 2025-03-13T00:00:00 and `end_datetime` as 2025-03-23T23:59:59, summary as "Japan Trip", event_type as 'outOfOffice'
+            <end>
+            <begin>
+                user: I do not want to be disturbed for 2 hours, schedule focus time / dnd / do not disturb on 5th Feb for 10 am.
+                agent: call function with `start_datetime` as 2025-02-05T10:00:00 and `end_datetime` as 2025-02-05T12:00:00, event_type as 'focusTime'
             <end>
         End of examples
     """
@@ -260,6 +270,7 @@ def create_event(
         attendees=attendees,
         summary=summary,
         description=description,
+        event_type=event_type,
     )
 
     if event:

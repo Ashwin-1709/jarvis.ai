@@ -126,6 +126,7 @@ class GoogleCalendarClient:
         summary: str = "",
         description: str = "",
         calendar_id: str = PRIMARY_CALENDAR,
+        event_type: str = "default",
     ) -> List[Dict]:
         """
         Create calendar event.
@@ -135,6 +136,7 @@ class GoogleCalendarClient:
         event["end"] = {"dateTime": end_datetime}
         event["summary"] = summary
         event["description"] = description
+        event["eventType"] = event_type
         event["attendees"] = list()
         for attendee in attendees:
             event["attendees"].append({"email": attendee})
