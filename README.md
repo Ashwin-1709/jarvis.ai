@@ -4,6 +4,8 @@
 
 Jarvis is a personal AI assistant designed to help you manage your day-to-day events and calendar. It leverages Google Calendar API and a gemini AI model to provide a seamless experience.
 
+---
+
 ### Features
 
 - **Google Calendar Integration**: Fetch, manage and create calendar events.
@@ -11,7 +13,7 @@ Jarvis is a personal AI assistant designed to help you manage your day-to-day ev
 - **Memory Management**: Keeps track of the conversation context.
 
 ### Upcoming
-- **More Calendar Features**: Modifying events, Checking conflicts, Scheduling OOO & Focus Time, event attachments & files and more!
+- **More Calendar Features**: Modifying events, Checking conflicts, event attachments & files and more!
 - **Improved Task Capability**: Migration to multi-agent based architecture handling increased complex queries.
 - **Web UI**: User friendly UI to interact with **Jarvis**.
 
@@ -39,7 +41,18 @@ For now, Jarvis can be used from terminal
         GEMINI_API_KEY=your_google_api_key
         ```
 
+---
+
 ### Usage
+
+To leverage features like **OOO** / **Focus time**, you need to have a enterprise calendar. The default calendar used is `primary` which is associated with your google account. To override the default calendar, modify `PRIMARY_CALENDAR` field in [constants](constants.py)
+
+```py
+PRIMARY_CALENDAR = 'your_enterprise_calendar'
+```
+--- 
+
+#### Running Jarvis:
 
 1. Run the Jarvis assistant:
     ```sh
@@ -104,6 +117,8 @@ No, you're not completely free between 3 AM and 9 AM on March 14th. You have a m
 Goodbye, will see you again 👋
 ```
 
+---
+
 ## Creating events
 
 ### 1:1s
@@ -125,6 +140,8 @@ Perfect. I've scheduled a 30-minute 1:1 meeting with redacted@gmail.com in your 
 
 <img src="static/1_1_meet.png" alt="Trip Planning Event" width="500"/>
 
+---
+
 ### Birthdays
 
 ```
@@ -136,6 +153,8 @@ Done. I've added an event to your calendar for Sandra's birthday on January 15th
 
 <img src="static/birthday_event.png" alt="Birthdays" width="500"/>
 
+---
+
 ### Other events
 
 ```
@@ -146,3 +165,5 @@ OK. I've added a "Movie Night" event to your calendar from 8 pm to 11 pm on Janu
 ```
 
 <img src="static/movie_night_event.png" alt="Movie Nights" width="500"/>
+
+---
