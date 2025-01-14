@@ -1,3 +1,5 @@
+"""Single Agent Architecture for Jarvis"""
+
 import os
 from constants import *
 from tools import tools

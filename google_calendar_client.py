@@ -1,3 +1,5 @@
+"""Wrapper client for google calendar"""
+
 from datetime import datetime
 import os.path
 import pytz
